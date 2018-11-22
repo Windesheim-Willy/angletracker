@@ -1,17 +1,24 @@
 #!/usr/bin/env python
 import serial
 import rospy
-from std_msgs.msg import String
+from std_msgs.msg import String, Int32
+
+# --- Methods
+
+# Callback method to execute commands from the angletracker_command topic
+def ExecuteCommand(msg):
+    socket.write(str(msg.data).encode())
+
+# --- Methods
 
 # To which topic on Willy we will publish
 pubTopicName = 'angletracker_data'
 subTopicName = 'angletracker_command'
 
 # Init ROS components
-rospy.init_node('topic_publisher')
-rospy.init_node('topic_subscriber')
-pubTopicInstance = rospy.Publisher(topicName, String ,queue_size=25)
-subTopicInstance = rospy.Subscriber(subTopicName, String, ExecuteCommand);
+rospy.init_node('angletracker')
+pubTopicInstance = rospy.Publisher(pubTopicName, String ,queue_size=25)
+subTopicInstance = rospy.Subscriber(subTopicName, Int32, ExecuteCommand);
 
 # Init default values
 topicMessage = ""
@@ -27,9 +34,9 @@ socket.open()
 while not rospy.is_shutdown(): 
     topicMessage = socket.readline()
     topicMessage = topicMessage.rstrip()
-    topicInstance.publish(topicMessage)
+    pubTopicInstance.publish(topicMessage)
     print(topicMessage)
+
+
 	
-# Callback method to execute commands from the angletracker_command topic
-def ExecuteCommand(msg)
-	socket.write(msg.data.encode())
+
